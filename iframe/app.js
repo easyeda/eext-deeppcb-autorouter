@@ -723,19 +723,6 @@
 		return false;
 	}
 
-	function listenForCommands() {
-		try {
-			if (DP.hasEda() && eda.sys_MessageBus && eda.sys_MessageBus.pullPublic) {
-				eda.sys_MessageBus.pullPublic('deeppcb-command', function (message) {
-					if (message && message.action) handleCommandAction(message.action);
-				});
-			}
-		}
-		catch (e) {
-			/* message bus is optional */
-		}
-	}
-
 	async function boot() {
 		DP.loadConfig();
 		DP.ui.init();
@@ -753,7 +740,6 @@
 		DP.render();
 
 		var action = consumePendingAction();
-		listenForCommands();
 		await DP.refreshCredits(true);
 
 		var session = DP.loadSession();

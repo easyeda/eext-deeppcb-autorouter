@@ -85,8 +85,7 @@
 		'cors-help-title': 'corsHelpTitle',
 		'cors-help-text': 'corsHelpText',
 		'use-proxy-btn': 'useLocalProxy',
-		'save-proxy-btn': 'saveProxyScript',
-		'save-worker-btn': 'saveWorkerScript',
+		'save-proxy-btn': 'downloadProxyPackage',
 		'proxy-script-hint': 'proxyScriptHint',
 		'permission-hint': 'permissionHint',
 		'progress-title': 'progressTitle',
@@ -801,27 +800,11 @@
 					return;
 				}
 				try {
-					var file = await eda.sys_FileSystem.getExtensionFile('/tools/deeppcb-proxy.mjs');
-					if (!file) file = await eda.sys_FileSystem.getExtensionFile('tools/deeppcb-proxy.mjs');
-					if (!file) throw new Error('tools/deeppcb-proxy.mjs not found in the package');
-					await eda.sys_FileSystem.saveFile(file, 'deeppcb-proxy.mjs');
-					DP.toast(DP.t('proxyScriptSaved', 'deeppcb-proxy.mjs'), 'ok');
-				}
-				catch (error) {
-					DP.toast(DP.t('proxyScriptFailed', String((error && error.message) || error)), 'err');
-				}
-			});
-			$('save-worker-btn').addEventListener('click', async function () {
-				if (!DP.hasEda() || !eda.sys_FileSystem) {
-					DP.toast(DP.t('proxyScriptFailed', DP.t('apiNoticeNoEda')), 'err');
-					return;
-				}
-				try {
-					var file = await eda.sys_FileSystem.getExtensionFile('/tools/deeppcb-cors-worker.js');
-					if (!file) file = await eda.sys_FileSystem.getExtensionFile('tools/deeppcb-cors-worker.js');
-					if (!file) throw new Error('tools/deeppcb-cors-worker.js not found in the package');
-					await eda.sys_FileSystem.saveFile(file, 'deeppcb-cors-worker.js');
-					DP.toast(DP.t('proxyScriptSaved', 'deeppcb-cors-worker.js'), 'ok');
+					var file = await eda.sys_FileSystem.getExtensionFile('/tools/deeppcb-proxy.zip');
+					if (!file) file = await eda.sys_FileSystem.getExtensionFile('tools/deeppcb-proxy.zip');
+					if (!file) throw new Error('tools/deeppcb-proxy.zip not found in the package');
+					await eda.sys_FileSystem.saveFile(file, 'deeppcb-proxy.zip');
+					DP.toast(DP.t('proxyScriptSaved', 'deeppcb-proxy.zip'), 'ok');
 				}
 				catch (error) {
 					DP.toast(DP.t('proxyScriptFailed', String((error && error.message) || error)), 'err');

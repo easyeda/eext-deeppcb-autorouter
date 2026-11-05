@@ -16,5 +16,8 @@
 /tsconfig.json
 /tmp/
 /cspell.json
+/tools/deeppcb-proxy.mjs
+/tools/proxy-bundle/
 .eslintcache
 debug.log
+.env

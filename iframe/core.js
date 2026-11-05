@@ -4,8 +4,14 @@
 
 	var DP = window.DP || (window.DP = {});
 
-	DP.VERSION = '1.0.0';
 	DP.API_DEFAULT = 'https://api.deeppcb.ai/api/v1';
+	/**
+	 * The public API rejects API-key board creation when no webhook is
+	 * supplied, even though the extension polls status itself. This is the
+	 * same receiver the reference KiCad plugin uses.
+	 */
+	DP.WEBHOOK_URL = 'https://plugin.kicad.deeppcb.ai';
+	DP.WEBHOOK_TOKEN = 'webhook_token';
 	DP.LINKS = {
 		home: 'https://app.deeppcb.ai',
 		integration: 'https://app.deeppcb.ai/integration',
@@ -627,6 +633,8 @@
 		form.append('requestId', DP.uid());
 		form.append('routingType', 'CurrentUnprotectedWiring');
 		form.append('batch', '1');
+		form.append('webhookUrl', DP.WEBHOOK_URL);
+		form.append('webhookToken', DP.WEBHOOK_TOKEN);
 		return DP.request('/boards', { method: 'POST', body: form, timeout: 180000 });
 	};
 

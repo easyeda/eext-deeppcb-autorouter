@@ -1,4 +1,4 @@
 {
 	"DeepPCB AI Autorouter": "DeepPCB AI 自动布线",
-	"DeepPCB AI Autorouter v${1}\n\nRoute your PCB automatically with the DeepPCB cloud AI engine.\n\nAPI key: https://app.deeppcb.ai/integration\nProject page: https://app.deeppcb.ai\n\nThis extension is an unofficial EasyEDA Pro port of the open-source DeepPCB KiCad plugin (Apache-2.0).": "DeepPCB AI 自动布线 v${1}\n\n使用 DeepPCB 云端 AI 引擎为本工程的 PCB 自动布线。\n\n获取 API Key：https://app.deeppcb.ai/integration\nDeepPCB 官网：https://app.deeppcb.ai\n\n本扩展是非官方的 EasyEDA Pro 移植版，基于开源项目 DeepPCB KiCad Plugin（Apache-2.0）。"
+	"Cannot open the DeepPCB window: ${1}\n\nMake sure the extension is enabled and the iframe files are present.": "无法打开 DeepPCB 窗口：${1}\n\n请确认扩展已启用，且 iframe 文件完整。"
 }

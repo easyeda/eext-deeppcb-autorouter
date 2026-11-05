@@ -7,3 +7,5 @@
 /.eslintcache
 debug.log
 /tmp/
+.env
+/tools/deeppcb-proxy.zip
