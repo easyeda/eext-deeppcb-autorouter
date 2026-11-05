@@ -1,0 +1,35 @@
+{
+	"version": "0.2",
+	"language": "en,zh-CN",
+	"ignorePaths": [
+		"node_modules/**",
+		"dist/**",
+		"build/dist/**",
+		"package-lock.json",
+		"tmp/**"
+	],
+	"words": [
+		"autorouter",
+		"chip",
+		"cors",
+		"deeppcb",
+		"dmt",
+		"dsn",
+		"easyeda",
+		"eext",
+		"epro",
+		"epcb",
+		"insta",
+		"instadeepai",
+		"jlceda",
+		"kicad",
+		"lceda",
+		"netclass",
+		"netclasses",
+		"pcbnew",
+		"ratline",
+		"ratlines",
+		"specctra",
+		"unrouted"
+	]
+}

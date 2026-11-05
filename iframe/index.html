@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="zh-Hans">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>DeepPCB AI Autorouter</title>
+		<link rel="stylesheet" href="/iframe/style.css" />
+	</head>
+	<body>
+		<div id="app">
+			<header class="topbar">
+				<div class="brand">
+					<img class="brand-logo" src="/iframe/logo.png" alt="DeepPCB" />
+					<div class="brand-text">
+						<div class="brand-title">DeepPCB</div>
+						<div class="brand-sub" id="brand-sub">AI Autorouter</div>
+					</div>
+				</div>
+				<div class="top-actions">
+					<button class="chip" id="credits-chip" type="button" title="Credits">
+						<span class="chip-dot"></span>
+						<span id="credits-text">--</span>
+					</button>
+					<button class="icon-btn" id="lang-btn" type="button" title="Language">EN</button>
+					<button class="icon-btn" id="settings-btn" type="button" title="Settings">
+						<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+							<path fill="currentColor" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+							<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2" />
+						</svg>
+					</button>
+				</div>
+			</header>
+
+			<div class="notice hidden" id="api-notice">
+				<span class="notice-icon">!</span>
+				<span id="api-notice-text"></span>
+				<button class="link-btn" id="api-notice-action" type="button"></button>
+			</div>
+
+			<div class="tabs">
+				<button class="tab active" data-tab="route" type="button" id="tab-route">Route</button>
+				<button class="tab" data-tab="history" type="button" id="tab-history">History</button>
+			</div>
+
+			<main>
+				<section id="tab-panel-route">
+					<div class="card restore-card hidden" id="restore-card">
+						<div class="restore-main">
+							<div class="restore-title" id="restore-title">Previous run found</div>
+							<div class="restore-sub" id="restore-sub"></div>
+						</div>
+						<div class="restore-actions">
+							<button class="btn ghost" id="restore-dismiss" type="button">Dismiss</button>
+							<button class="btn secondary" id="restore-btn" type="button">Restore</button>
+						</div>
+					</div>
+
+					<div class="card" id="setup-card">
+						<div class="card-head">
+							<div>
+								<h2 id="setup-title">New routing job</h2>
+								<p class="muted" id="setup-subtitle"></p>
+							</div>
+							<span class="pill" id="project-pill">--</span>
+						</div>
+
+						<div class="field">
+							<label for="board-name" id="label-board-name">Board name</label>
+							<input type="text" id="board-name" autocomplete="off" spellcheck="false" />
+						</div>
+
+						<div class="field">
+							<div class="label-row">
+								<label for="timeout" id="label-timeout">Allocated time</label>
+								<span class="value-badge"><span id="timeout-value">45</span> <span id="timeout-unit">min</span></span>
+							</div>
+							<input type="range" id="timeout" min="5" max="120" step="1" value="45" />
+							<p class="hint" id="unlock-note"></p>
+						</div>
+
+						<label class="check-row">
+							<input type="checkbox" id="auto-import" />
+							<span>
+								<span class="check-title" id="label-auto-import">Automatically import new solutions</span>
+								<span class="check-hint" id="auto-import-hint"></span>
+							</span>
+						</label>
+
+						<div class="actions">
+							<button class="btn primary" id="start-btn" type="button">
+								<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z" /></svg>
+								<span id="start-btn-text">Start routing</span>
+							</button>
+							<button class="btn ghost" id="restore-inline-btn" type="button">Restore previous run</button>
+							<a class="link-btn" id="get-key-link" href="https://app.deeppcb.ai/integration" target="_blank" rel="noreferrer">Get an API key</a>
+						</div>
+					</div>
+
+					<div class="card hidden" id="run-card">
+						<div class="card-head">
+							<div class="status-head">
+								<span class="status-dot" id="status-dot"></span>
+								<div>
+									<h2 id="run-title">Routing job</h2>
+									<p class="muted" id="run-subtitle">--</p>
+								</div>
+							</div>
+							<span class="pill" id="status-pill">--</span>
+						</div>
+
+						<div class="progress-track"><div class="progress-fill" id="run-progress"></div></div>
+
+						<div class="metrics">
+							<div class="metric">
+								<div class="metric-label" id="metric-time-label">Time left</div>
+								<div class="metric-value" id="metric-time">--</div>
+							</div>
+							<div class="metric">
+								<div class="metric-label" id="metric-rev-label">Solutions</div>
+								<div class="metric-value" id="metric-rev">0</div>
+							</div>
+							<div class="metric">
+								<div class="metric-label" id="metric-rate-label">Credits / min</div>
+								<div class="metric-value" id="metric-rate">--</div>
+							</div>
+						</div>
+
+						<p class="hint warn-hint hidden" id="edit-warning"></p>
+
+						<div class="actions wrap">
+							<button class="btn primary hidden" id="start-pending-btn" type="button">Start routing</button>
+							<button class="btn danger" id="stop-btn" type="button">Stop</button>
+							<button class="btn primary hidden" id="resume-btn" type="button">Resume</button>
+							<button class="btn secondary hidden" id="newjob-btn" type="button">New job</button>
+							<button class="btn secondary" id="import-latest-btn" type="button">Import latest</button>
+							<button class="btn ghost" id="save-ses-btn" type="button">Save .ses</button>
+							<button class="btn ghost" id="open-app-btn" type="button">Open in DeepPCB</button>
+							<button class="btn ghost" id="rate-btn" type="button">Rate</button>
+							<button class="btn ghost" id="refresh-btn" type="button">Refresh</button>
+						</div>
+
+						<details class="advanced" id="advanced">
+							<summary id="advanced-summary">Solutions</summary>
+							<div class="advanced-body">
+								<div class="row">
+									<select id="revision-select"></select>
+									<button class="btn secondary" id="import-selected-btn" type="button">Import selected</button>
+									<span class="muted" id="imported-note"></span>
+								</div>
+							</div>
+						</details>
+					</div>
+
+					<div class="card steps-card" id="how-card">
+						<h3 id="how-title">How it works</h3>
+						<ol class="how-list">
+							<li><span class="how-num">1</span><span id="how-1"></span></li>
+							<li><span class="how-num">2</span><span id="how-2"></span></li>
+							<li><span class="how-num">3</span><span id="how-3"></span></li>
+							<li><span class="how-num">4</span><span id="how-4"></span></li>
+						</ol>
+					</div>
+				</section>
+
+				<section id="tab-panel-history" class="hidden">
+					<div class="card">
+						<div class="card-head">
+							<div>
+								<h2 id="history-title">Recent runs</h2>
+								<p class="muted" id="history-subtitle"></p>
+							</div>
+							<button class="btn ghost" id="clear-history-btn" type="button">Clear</button>
+						</div>
+						<div class="history-list" id="history-list"></div>
+					</div>
+				</section>
+			</main>
+		</div>
+
+		<!-- Settings modal -->
+		<div class="modal-mask hidden" id="settings-modal">
+			<div class="modal">
+				<div class="modal-head">
+					<h2 id="settings-title">Settings</h2>
+					<button class="icon-btn" id="settings-close" type="button">×</button>
+				</div>
+				<div class="modal-body">
+					<div class="field">
+						<div class="label-row">
+							<label for="set-api-key" id="label-api-key">API key</label>
+							<a class="link-btn" href="https://app.deeppcb.ai/integration" target="_blank" rel="noreferrer" id="get-key-link-2">Get an API key</a>
+						</div>
+						<div class="input-with-btn">
+							<input type="password" id="set-api-key" autocomplete="off" spellcheck="false" />
+							<button class="icon-btn" id="toggle-key" type="button" title="Show / hide">
+								<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+									<path fill="none" stroke="currentColor" stroke-width="2" d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+									<circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2" />
+								</svg>
+							</button>
+						</div>
+					</div>
+
+					<div class="field">
+						<label for="set-api-base" id="label-api-base">API base URL</label>
+						<input type="text" id="set-api-base" autocomplete="off" spellcheck="false" />
+						<p class="hint" id="api-base-hint"></p>
+					</div>
+
+					<div class="field">
+						<div class="label-row">
+							<label for="set-timeout" id="label-default-time">Default allocated time</label>
+							<span class="value-badge"><span id="set-timeout-value">45</span> <span id="set-timeout-unit">min</span></span>
+						</div>
+						<input type="range" id="set-timeout" min="5" max="120" step="1" value="45" />
+					</div>
+
+					<label class="check-row">
+						<input type="checkbox" id="set-auto-import" />
+						<span>
+							<span class="check-title" id="label-auto-import-2">Automatically import new solutions</span>
+							<span class="check-hint" id="auto-import-hint-2"></span>
+						</span>
+					</label>
+
+					<div class="test-row">
+						<button class="btn secondary" id="test-btn" type="button">Test connection</button>
+						<span class="test-result" id="test-result"></span>
+					</div>
+
+					<div class="help-box">
+						<div class="help-title" id="cors-help-title">Can't connect? (CORS)</div>
+						<p class="hint" id="cors-help-text"></p>
+						<p class="hint mono" id="proxy-url-text">http://127.0.0.1:8787/api/v1</p>
+						<div class="actions wrap">
+							<button class="btn secondary" id="use-proxy-btn" type="button">Use local proxy</button>
+							<button class="btn ghost" id="save-proxy-btn" type="button">Download proxy package</button>
+						</div>
+						<p class="hint" id="proxy-script-hint"></p>
+					</div>
+
+					<p class="hint" id="permission-hint"></p>
+				</div>
+				<div class="modal-actions">
+					<button class="btn ghost" id="settings-cancel" type="button">Cancel</button>
+					<button class="btn primary" id="settings-save" type="button">Save</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Progress modal -->
+		<div class="modal-mask hidden" id="progress-modal">
+			<div class="modal progress-modal">
+				<div class="modal-head">
+					<h2 id="progress-title">Starting routing</h2>
+				</div>
+				<div class="modal-body">
+					<p class="muted" id="progress-subtitle"></p>
+					<ol class="progress-steps" id="progress-steps"></ol>
+					<div class="progress-track"><div class="progress-fill" id="progress-bar"></div></div>
+					<p class="error-text hidden" id="progress-error"></p>
+				</div>
+				<div class="modal-actions">
+					<button class="btn ghost" id="progress-settings-btn" type="button">Settings</button>
+					<button class="btn primary" id="progress-close" type="button" disabled>Close</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Rating modal -->
+		<div class="modal-mask hidden" id="rating-modal">
+			<div class="modal">
+				<div class="modal-head">
+					<h2 id="rating-title">Rate this board</h2>
+					<button class="icon-btn" id="rating-close" type="button">×</button>
+				</div>
+				<div class="modal-body">
+					<p class="muted" id="rating-intro"></p>
+					<div class="rating-row"><span id="rating-speed">Speed</span><div class="stars" data-dim="speed"></div></div>
+					<div class="rating-row"><span id="rating-drc">DRC</span><div class="stars" data-dim="drc"></div></div>
+					<div class="rating-row"><span id="rating-solution">Solution quality</span><div class="stars" data-dim="solution"></div></div>
+					<div class="field">
+						<div class="label-row">
+							<label for="rating-feedback" id="rating-feedback-label">Feedback (required)</label>
+							<span class="muted" id="rating-count">0 / 1000</span>
+						</div>
+						<textarea id="rating-feedback" rows="4" maxlength="1000"></textarea>
+					</div>
+				</div>
+				<div class="modal-actions">
+					<button class="btn ghost" id="rating-cancel" type="button">Cancel</button>
+					<button class="btn primary" id="rating-submit" type="button" disabled>Submit</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Credits modal -->
+		<div class="modal-mask hidden" id="credits-modal">
+			<div class="modal">
+				<div class="modal-head">
+					<h2 id="credits-title">Not enough credits</h2>
+					<button class="icon-btn" id="credits-close" type="button">×</button>
+				</div>
+				<div class="modal-body">
+					<p id="credits-body"></p>
+					<p class="hint" id="credits-hint"></p>
+				</div>
+				<div class="modal-actions">
+					<button class="btn ghost" id="credits-cancel" type="button">Cancel</button>
+					<button class="btn primary" id="credits-buy" type="button">Buy credits</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Generic confirm modal -->
+		<div class="modal-mask hidden" id="confirm-modal">
+			<div class="modal">
+				<div class="modal-head">
+					<h2 id="confirm-title">Confirm</h2>
+				</div>
+				<div class="modal-body">
+					<p id="confirm-body"></p>
+				</div>
+				<div class="modal-actions">
+					<button class="btn ghost" id="confirm-cancel" type="button">Cancel</button>
+					<button class="btn primary" id="confirm-ok" type="button">OK</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="toast-host" id="toast-host"></div>
+
+		<script src="/iframe/i18n.js"></script>
+		<script src="/iframe/core.js"></script>
+		<script src="/iframe/ui.js"></script>
+		<script src="/iframe/app.js"></script>
+	</body>
+</html>

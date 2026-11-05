@@ -1,0 +1,57 @@
+{
+	"name": "deeppcb-autorouter",
+	"uuid": "323f151f184b30e619e478cf1a10a275",
+	"displayName": "DeepPCB AI Autorouter",
+	"description": "使用 DeepPCB 云端 AI 引擎为 PCB 进行自动布线",
+	"version": "0.0.2",
+	"publisher": "EasyEDA",
+	"engines": {
+		"eda": "^3.2.0"
+	},
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/easyeda/eext-deeppcb-autorouter"
+	},
+	"categories": "PCB",
+	"keywords": [
+		"PCB",
+		"Autorouter",
+		"Routing",
+		"AI",
+		"DeepPCB"
+	],
+	"images": {
+		"logo": "./images/logo.png"
+	},
+	"homepage": "https://github.com/easyeda/eext-deeppcb-autorouter",
+	"bugs": "https://github.com/easyeda/eext-deeppcb-autorouter/issues",
+	"activationEvents": {},
+	"entry": "./dist/index",
+	"dependentExtensions": {},
+	"headerMenus": {
+		"pcb": [
+			{
+				"id": "deeppcb-pcb",
+				"title": "DeepPCB AI Autorouter",
+				"menuItems": [
+					{
+						"id": "deeppcb-pcb-open",
+						"title": "Open DeepPCB",
+						"registerFn": "openDeepPcb"
+					},
+					{
+						"id": "deeppcb-pcb-new",
+						"title": "New Routing Job...",
+						"registerFn": "newRoutingJob"
+					},
+					{
+						"id": "deeppcb-pcb-settings",
+						"title": "Settings...",
+						"registerFn": "openSettings"
+					}
+				]
+			}
+		]
+	}
+}
