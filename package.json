@@ -1,7 +1,7 @@
 {
 	"name": "deeppcb-autorouter",
 	"type": "module",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "DeepPCB AI autorouter extension for EasyEDA Pro",
 	"author": "EasyEDA Community",
 	"license": "Apache-2.0",
