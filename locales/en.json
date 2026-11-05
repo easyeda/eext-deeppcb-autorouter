@@ -1,0 +1,4 @@
+{
+	"DeepPCB AI Autorouter": "DeepPCB AI Autorouter",
+	"DeepPCB AI Autorouter v${1}\n\nRoute your PCB automatically with the DeepPCB cloud AI engine.\n\nAPI key: https://app.deeppcb.ai/integration\nProject page: https://app.deeppcb.ai\n\nThis extension is an unofficial EasyEDA Pro port of the open-source DeepPCB KiCad plugin (Apache-2.0).": "DeepPCB AI Autorouter v${1}\n\nRoute your PCB automatically with the DeepPCB cloud AI engine.\n\nAPI key: https://app.deeppcb.ai/integration\nProject page: https://app.deeppcb.ai\n\nThis extension is an unofficial EasyEDA Pro port of the open-source DeepPCB KiCad plugin (Apache-2.0)."
+}

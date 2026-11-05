@@ -1,0 +1,21 @@
+DeepPCB AI Autorouter for EasyEDA Pro
+Copyright 2026 EasyEDA Community
+
+This product is an unofficial EasyEDA Pro port of the DeepPCB KiCad plugin.
+
+Upstream project:
+  deeppcb-kicad-plugin
+  https://github.com/instadeepai/deeppcb-kicad-plugin
+  Copyright 2026 InstaDeep Ltd.
+  Licensed under the Apache License, Version 2.0.
+
+The DeepPCB name and logo are trademarks of InstaDeep Ltd. The logo assets
+included in this repository (images/logo.png, iframe/logo.png) are taken from
+the upstream repository and are used here to identify the DeepPCB service.
+No endorsement by InstaDeep Ltd. is implied.
+
+The SES import/export flow uses the EasyEDA Pro extension API
+(pcb_ManufactureData.getDsnFile, pcb_Document.importAutoRouteSesFile and
+related interfaces).
+
+Licensed under the Apache License, Version 2.0. See LICENSE.
