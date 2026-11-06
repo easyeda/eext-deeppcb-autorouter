@@ -8,8 +8,8 @@
 
 const IFRAME_ID = 'deeppcb-dashboard';
 const IFRAME_HTML = '/iframe/index.html';
-const IFRAME_WIDTH = 840;
-const IFRAME_HEIGHT = 780;
+const IFRAME_WIDTH = 720;
+const IFRAME_HEIGHT = 760;
 
 /** Written before the dashboard opens so a fresh frame can act on the menu intent. */
 const PENDING_ACTION_KEY = 'deeppcb_pending_action';

@@ -82,11 +82,6 @@
 		'settings-cancel': 'cancel',
 		'settings-save': 'save',
 		'test-btn': 'testConnection',
-		'cors-help-title': 'corsHelpTitle',
-		'cors-help-text': 'corsHelpText',
-		'use-proxy-btn': 'useLocalProxy',
-		'save-proxy-btn': 'downloadProxyPackage',
-		'proxy-script-hint': 'proxyScriptHint',
 		'permission-hint': 'permissionHint',
 		'progress-title': 'progressTitle',
 		'progress-close': 'close',
@@ -204,11 +199,11 @@
 		var name = state.projectName || DP.t('unknown');
 		var pcb = state.pcbName ? ' · ' + state.pcbName : '';
 		setText('project-pill', name + pcb);
-		if (!state.boardNameTouched && state.projectName) {
-			state.boardName = state.projectName;
+		if (!state.boardNameTouched) {
+			state.boardName = state.pcbName || state.projectName || 'board';
 		}
 		if (!state.boardName) {
-			state.boardName = state.projectName || 'board';
+			state.boardName = state.pcbName || state.projectName || 'board';
 		}
 		var input = $('board-name');
 		if (document.activeElement !== input) input.value = state.boardName;
@@ -789,26 +784,6 @@
 			});
 			$('set-timeout').addEventListener('input', function () {
 				setText('set-timeout-value', $('set-timeout').value);
-			});
-			$('use-proxy-btn').addEventListener('click', function () {
-				$('set-api-base').value = 'http://127.0.0.1:8787/api/v1';
-				DP.toast(DP.t('proxyApplied'), 'ok');
-			});
-			$('save-proxy-btn').addEventListener('click', async function () {
-				if (!DP.hasEda() || !eda.sys_FileSystem) {
-					DP.toast(DP.t('proxyScriptFailed', DP.t('apiNoticeNoEda')), 'err');
-					return;
-				}
-				try {
-					var file = await eda.sys_FileSystem.getExtensionFile('/tools/deeppcb-proxy.zip');
-					if (!file) file = await eda.sys_FileSystem.getExtensionFile('tools/deeppcb-proxy.zip');
-					if (!file) throw new Error('tools/deeppcb-proxy.zip not found in the package');
-					await eda.sys_FileSystem.saveFile(file, 'deeppcb-proxy.zip');
-					DP.toast(DP.t('proxyScriptSaved', 'deeppcb-proxy.zip'), 'ok');
-				}
-				catch (error) {
-					DP.toast(DP.t('proxyScriptFailed', String((error && error.message) || error)), 'err');
-				}
 			});
 			$('credits-chip').addEventListener('click', function () {
 				DP.openExternal(DP.LINKS.credits);

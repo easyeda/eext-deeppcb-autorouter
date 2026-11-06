@@ -89,7 +89,7 @@
 			throw apiError('This EasyEDA version does not support getDsnFile().');
 		}
 
-		var name = DP.safeName(S.pcbName || S.projectName, 'board');
+		var name = DP.safeName(S.boardName || S.pcbName || S.projectName, 'board');
 		var file = await DP.withTimeout(
 			eda.pcb_ManufactureData.getDsnFile(name),
 			45000,
@@ -167,15 +167,46 @@
 	function onStatusChanged(previous, current) {
 		if (!DP.isTerminal(current)) return;
 		DP.refreshCredits(true);
-		if (!S.ratingPrompted && S.jobStartedHere && (DP.isActive(previous) || DP.isPreRun(previous) || previous === 'Starting')) {
-			S.ratingPrompted = true;
-			window.setTimeout(function () {
-				if (S.boardId && DP.isTerminal(S.status)) DP.openRating();
-			}, 500);
-		}
+		// Do not open the rating dialog automatically; the user opens it from
+		// the Rate button on the job card when they want to leave feedback.
 	}
 
 	/* ---------------- Import ---------------- */
+
+	async function deleteRoutingPrimitives(apiName) {
+		var api = eda[apiName];
+		if (!api) return 0;
+
+		if (typeof api.getAllPrimitiveId === 'function') {
+			var ids = await api.getAllPrimitiveId();
+			if (!ids || !ids.length) return 0;
+			for (var i = 0; i < ids.length; i += 400) {
+				var deleted = await api.delete(ids.slice(i, i + 400));
+				if (!deleted) throw apiError(DP.t('clearRoutingFailed'));
+			}
+			return ids.length;
+		}
+
+		if (typeof api.getAll === 'function') {
+			var primitives = await api.getAll();
+			if (!primitives || !primitives.length) return 0;
+			var removed = await api.delete(primitives);
+			if (!removed) throw apiError(DP.t('clearRoutingFailed'));
+			return primitives.length;
+		}
+
+		throw apiError(DP.t('clearRoutingFailed'));
+	}
+
+	async function clearRouting() {
+		// Delete vias first, then tracks, so the board ends up with no routing
+		// before the new SES is imported. Without this, every import stacks on
+		// top of the previous solution.
+		var total = 0;
+		total += await deleteRoutingPrimitives('pcb_PrimitiveVia');
+		total += await deleteRoutingPrimitives('pcb_PrimitiveLine');
+		return total;
+	}
 
 	async function importRevision(revisionNumber, options) {
 		options = options || {};
@@ -192,7 +223,7 @@
 		if (!result.ok) throw apiError(result.error || ('HTTP ' + result.status));
 		if (!result.text || !result.text.trim()) throw apiError('Empty SES response');
 
-		var baseName = DP.safeName(S.boardName || S.projectName, 'board');
+		var baseName = DP.safeName(S.boardName || S.pcbName || S.projectName, 'board');
 		var file = new File(
 			[result.text],
 			baseName + '_rev' + revisionNumber + '.ses',
@@ -200,6 +231,7 @@
 		);
 		S.lastSesFile = file;
 
+		await clearRouting();
 		var imported = await eda.pcb_Document.importAutoRouteSesFile(file);
 		if (!imported) throw apiError(DP.t('importFailed', 'importAutoRouteSesFile returned false'));
 
@@ -286,7 +318,7 @@
 		}
 
 		var timeout = Math.max(5, Math.min(120, Number($('timeout').value) || DP.cfg.defaultTimeout));
-		var boardName = ($('board-name').value || '').trim() || S.projectName || 'board';
+		var boardName = ($('board-name').value || '').trim() || S.pcbName || S.projectName || 'board';
 		S.boardName = boardName;
 		S.boardNameTouched = true;
 		S.busy = true;
@@ -596,7 +628,7 @@
 		S.board = null;
 		S.status = '';
 		S.boardNameTouched = false;
-		S.boardName = S.projectName || 'board';
+		S.boardName = S.pcbName || S.projectName || 'board';
 		S.revisions = [];
 		S.latestRevision = null;
 		S.selectedRevision = '';
@@ -619,10 +651,6 @@
 			return;
 		}
 		var revision = S.latestRevision;
-		var confirmed = await DP.confirm(DP.t('confirmImport', revision.revisionNumber), {
-			okLabel: DP.t('importLatest'),
-		});
-		if (!confirmed) return;
 		S.importing = true;
 		DP.renderRun();
 		try {
@@ -643,8 +671,6 @@
 			toast(DP.t('noSolutions'), 'warn');
 			return;
 		}
-		var confirmed = await DP.confirm(DP.t('confirmImport', value), { okLabel: DP.t('importSelected') });
-		if (!confirmed) return;
 		S.importing = true;
 		DP.renderRun();
 		try {

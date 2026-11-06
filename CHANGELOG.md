@@ -5,6 +5,24 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.3] - 2026-11-06
+
+### Fixed
+
+- Clear existing tracks and vias before importing a new SES solution, so solutions no longer stack on the canvas.
+- Import a new solution directly (clear + import) without a confirmation dialog.
+- Do not open the rating dialog automatically after a job; the user opens it from the Rate button.
+- Default the board name to the PCB name instead of the project name.
+- Use the edited board name for the uploaded DSN filename.
+- Reduce the dashboard width to 720 px so it covers less of the canvas.
+- Move **Test connection** directly below the API base URL field.
+- Reduce the empty space at the bottom of the routing progress dialog.
+
+### Changed
+
+- Removed the external bridge / CORS proxy settings; the extension uses the DeepPCB API directly.
+- README: English version first with a link to Chinese; removed the proxy package instructions.
+
 ## [0.0.1] - 2026-11-05
 
 ### Added
@@ -42,4 +60,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Requires EasyEDA Pro engine `>= 3.2.0` for `importAutoRouteSesFile()`.
 - External network interaction must be allowed for the extension in EasyEDA settings.
 
+[0.0.3]: https://github.com/easyeda/eext-deeppcb-autorouter
 [0.0.1]: https://github.com/easyeda/eext-deeppcb-autorouter

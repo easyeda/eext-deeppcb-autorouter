@@ -60,36 +60,7 @@ The extension only reads and displays the balance; it never handles payments. Pr
 
 ### CORS / connection errors
 
-DeepPCB currently allows browser requests only from its own web app (`app.deeppcb.ai`). EasyEDA runs on `pro.lceda.cn`, so direct calls are blocked by the browser (`Failed to fetch`). Until DeepPCB allowlists EasyEDA, use the local proxy package:
-
-#### 1. Download and unzip the proxy package
-
-Open the extension **Settings**, click **Download proxy package**, save `deeppcb-proxy.zip`, and unzip it into any folder.
-
-#### 2. Double-click to start
-
-- **Windows:** double-click `start-proxy.bat`
-- **macOS:** double-click `start-proxy.command` (right-click → Open if the system blocks it)
-- **Linux:** run `bash start-proxy.sh`
-
-The launcher checks for Node.js 18+. If it is missing, it offers to download a portable copy into the **current folder** (about 41 MB, from nodejs.org, SHA-256 verified). No separate Node.js installation is required.
-
-#### 3. Enable the proxy in the extension
-
-Keep the proxy window open and return to the extension settings:
-
-1. Click **Use local proxy**; the API base URL becomes:
-
-   ```text
-   http://127.0.0.1:8787/api/v1
-   ```
-
-2. Click **Test connection**.
-3. Click **Save** when it succeeds.
-
-The proxy listens on `127.0.0.1:8787` only and does not store your API key. Close the proxy window when you are done.
-
-> If DeepPCB later allowlists the EasyEDA origin, set the API base URL back to `https://api.deeppcb.ai/api/v1` — no proxy is needed then.
+The extension calls the DeepPCB API directly (default `https://api.deeppcb.ai/api/v1`). If a request is blocked or unreachable, check your network connection and the API base URL in Settings. DeepPCB must allow requests from the EasyEDA origin; contact DeepPCB if your network cannot reach the API.
 
 ### FAQ
 
@@ -100,7 +71,7 @@ The API key is invalid or expired. Generate a new one at [app.deeppcb.ai/integra
 Estimated as `creditsCostPerMinute × allocated time`. Top up at [app.deeppcb.ai/time-balance](https://app.deeppcb.ai/time-balance), or reduce the allocated time.
 
 **CORS / Failed to fetch**
-Download the proxy package as described above, unzip it, double-click the launcher, then click **Use local proxy** in Settings.
+Check your network connection and the API base URL in Settings. DeepPCB must allow requests from the EasyEDA origin.
 
 **The window does not open / "EasyEDA API not detected"**
 - Open it from the **PCB editor** menu, not by opening the HTML file in a browser.
@@ -120,11 +91,11 @@ DeepPCB may need tens of seconds to parse the DSN; the panel refreshes automatic
 | Setting | Default | Description |
 | --- | --- | --- |
 | API key | empty | Your personal DeepPCB API key |
-| API base URL | `https://api.deeppcb.ai/api/v1` | Change to `http://127.0.0.1:8787/api/v1` when using the local proxy |
+| API base URL | `https://api.deeppcb.ai/api/v1` | Change it when using a private gateway |
 | Default allocated time | 45 min | Initial duration for a new job |
 | Auto-import new solutions | on | Import new solutions into the open PCB automatically |
 
-The API key is stored only in the local extension configuration. Requests go only to the API address configured in Settings (DeepPCB or the local proxy).
+The API key is stored only in the local extension configuration. Requests go only to the API address configured in Settings.
 
 ### Menu
 
@@ -149,7 +120,7 @@ npm run build
 
 The package is written to `build/dist/deeppcb-autorouter_v<version>.eext`.
 
-Versioning starts at `0.0.1`; every `npm run build` increments the patch, and after 30 patches the minor advances (`0.0.30` → `0.1.0`). The build also regenerates `tools/deeppcb-proxy.zip`.
+Versioning starts at `0.0.1`; every `npm run build` increments the patch, and after 30 patches the minor advances (`0.0.30` → `0.1.0`).
 
 ### Credits and license
 
@@ -219,36 +190,7 @@ Versioning starts at `0.0.1`; every `npm run build` increments the patch, and af
 
 ### 连接失败 / 提示 CORS 时
 
-DeepPCB 目前只允许来自其官网 `app.deeppcb.ai` 的浏览器请求，而 EasyEDA 扩展运行在 `pro.lceda.cn`，所以直连会被浏览器拦截（表现为 `Failed to fetch` 或“请求在到达 DeepPCB 前被浏览器拦截”）。在 DeepPCB 官方放行 EasyEDA 来源之前，请使用本地代理包：
-
-#### 1. 下载并解压代理包
-
-打开扩展 **设置**，点击 **下载代理包**，保存 `deeppcb-proxy.zip`，然后解压到任意文件夹。
-
-#### 2. 双击启动
-
-- **Windows**：双击 `start-proxy.bat`
-- **macOS**：双击 `start-proxy.command`（若系统阻止，右键 → 打开）
-- **Linux**：运行 `bash start-proxy.sh`
-
-脚本会自动检测 Node.js 18+。如果没有安装，会询问是否下载便携版到**当前目录**（约 41MB，来自 nodejs.org，并校验 SHA-256），不需要单独安装 Node.js。
-
-#### 3. 在扩展中启用代理
-
-保持代理窗口打开，回到扩展设置：
-
-1. 点击 **使用本地代理**，API 地址会变为：
-
-   ```text
-   http://127.0.0.1:8787/api/v1
-   ```
-
-2. 点击 **测试连接**；
-3. 成功后点击 **保存**。
-
-代理只监听 `127.0.0.1:8787`，不保存 API Key。使用完毕后关闭代理窗口即可。
-
-> 若 DeepPCB 官方之后放行 EasyEDA 来源，可把 API 地址改回 `https://api.deeppcb.ai/api/v1` 直连，不再需要代理。
+扩展会直接调用 DeepPCB API（默认 `https://api.deeppcb.ai/api/v1`）。如果请求被拦截或无法访问，请检查网络连接和设置中的 API 地址；DeepPCB 需要允许 EasyEDA 来源访问，若你的网络无法访问该接口，请联系 DeepPCB。
 
 ### 常见问题
 
@@ -259,7 +201,7 @@ API Key 无效或过期。请到 [app.deeppcb.ai/integration](https://app.deeppc
 按 `creditsCostPerMinute × 分配时间` 估算费用。请到 [app.deeppcb.ai/time-balance](https://app.deeppcb.ai/time-balance) 充值，或减少分配时间。
 
 **提示 CORS / Failed to fetch**
-按上面的“连接失败 / 提示 CORS 时”下载代理包，解压并双击启动脚本，然后在设置中点击 **使用本地代理**。
+检查网络连接和设置中的 API 地址；DeepPCB 需要允许 EasyEDA 来源访问。
 
 **打不开窗口 / 提示“未检测到 EasyEDA API”**
 - 请从 **PCB 编辑器** 的菜单打开，而不是在浏览器中直接打开 HTML。
@@ -279,11 +221,11 @@ DeepPCB 解析 DSN 可能需要数十秒，面板会自动刷新。若长时间�
 | 设置 | 默认值 | 说明 |
 | --- | --- | --- |
 | API Key | 空 | DeepPCB 个人 API Key |
-| API 地址 | `https://api.deeppcb.ai/api/v1` | 使用本地代理时改为 `http://127.0.0.1:8787/api/v1` |
+| API 地址 | `https://api.deeppcb.ai/api/v1` | 使用私有网关时可修改 |
 | 默认分配时间 | 45 分钟 | 新建任务时的初始时长 |
 | 自动导入新方案 | 开启 | 新方案到达时自动写回当前 PCB |
 
-API Key 仅保存在本机扩展配置中；请求只会发送给你在设置中配置的 API 地址（DeepPCB 或本地代理）。
+API Key 仅保存在本机扩展配置中；请求只会发送给你在设置中配置的 API 地址。
 
 ### 菜单
 
@@ -308,7 +250,7 @@ npm run build
 
 构建产物位于 `build/dist/deeppcb-autorouter_v<版本号>.eext`。
 
-版本号从 `0.0.1` 开始，每次 `npm run build` 自动 +1；每 30 次进 1 位（`0.0.30` → `0.1.0`）。`npm run build` 还会自动生成 `tools/deeppcb-proxy.zip`。
+版本号从 `0.0.1` 开始，每次 `npm run build` 自动 +1；每 30 次进 1 位（`0.0.30` → `0.1.0`）。
 
 ### 致谢与许可
 
