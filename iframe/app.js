@@ -517,7 +517,6 @@
 			toast(DP.t('noHistory'), 'warn');
 			return;
 		}
-		S.sessionDismissed = true;
 		S.boardId = session.boardId;
 		S.boardPid = session.boardPid || '';
 		S.boardName = session.boardName || session.projectName || S.projectName;
@@ -541,7 +540,6 @@
 
 	DP.openHistoryItem = async function (item) {
 		if (!item || !item.boardId) return;
-		S.sessionDismissed = true;
 		S.boardId = item.boardId;
 		S.boardPid = item.boardPid || '';
 		S.boardName = item.boardName || item.projectName || item.boardId;
@@ -636,7 +634,6 @@
 		S.jobStartedHere = false;
 		S.ratingPrompted = false;
 		S.autoImportAttempt = null;
-		S.sessionDismissed = true;
 		DP.setTab('route');
 		DP.render();
 		window.setTimeout(function () {

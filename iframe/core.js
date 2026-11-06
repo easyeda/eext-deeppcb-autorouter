@@ -151,7 +151,6 @@
 		lastTickAt: 0,
 		ratingPrompted: false,
 		sessionAvailable: false,
-		sessionDismissed: false,
 		activeTab: 'route',
 		lastError: '',
 		progress: { steps: [], index: 0, active: false, finished: false },

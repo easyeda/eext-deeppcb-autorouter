@@ -9,7 +9,24 @@
 const IFRAME_ID = 'deeppcb-dashboard';
 const IFRAME_HTML = '/iframe/index.html';
 const IFRAME_WIDTH = 600;
-const IFRAME_HEIGHT = 720;
+/** No API key yet: tall enough for the setup card plus the key notice. */
+const IFRAME_HEIGHT_EMPTY = 565;
+/** API key configured: the dashboard fits without an empty strip at the bottom. */
+const IFRAME_HEIGHT_READY = 510;
+const API_KEY_CONFIG = 'deeppcb_api_key';
+
+function dashboardHeight(): number {
+	try {
+		const key = eda.sys_Storage.getExtensionUserConfig(API_KEY_CONFIG);
+		if (typeof key === 'string' && key.trim()) {
+			return IFRAME_HEIGHT_READY;
+		}
+	}
+	catch {
+		// Fall back to the roomier window when storage is unavailable.
+	}
+	return IFRAME_HEIGHT_EMPTY;
+}
 
 /** Written before the dashboard opens so a fresh frame can act on the menu intent. */
 const PENDING_ACTION_KEY = 'deeppcb_pending_action';
@@ -58,7 +75,7 @@ async function openDashboard(action: DashboardAction = 'open'): Promise<void> {
 		}
 	}
 
-	const openIFrame = (): Promise<boolean> => eda.sys_IFrame.openIFrame(IFRAME_HTML, IFRAME_WIDTH, IFRAME_HEIGHT, IFRAME_ID, {
+	const openIFrame = (): Promise<boolean> => eda.sys_IFrame.openIFrame(IFRAME_HTML, IFRAME_WIDTH, dashboardHeight(), IFRAME_ID, {
 		title: eda.sys_I18n.text('DeepPCB AI Autorouter'),
 		maximizeButton: false,
 		minimizeButton: true,

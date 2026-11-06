@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.5] - 2026-11-06
+
+### Changed
+
+- Remove the auto-import checkbox from the new-routing-job card; the option remains in Settings.
+- Remove the "previous run" card from the top of the dashboard. Use **Restore previous run** next to **Start routing** instead.
+- Size the dashboard to its content (600 × 510, or 600 × 565 before an API key is configured) so the empty strip at the bottom is gone.
+
 ## [0.0.4] - 2026-11-06
 
 ### Changed
@@ -68,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Requires EasyEDA Pro engine `>= 3.2.0` for `importAutoRouteSesFile()`.
 - External network interaction must be allowed for the extension in EasyEDA settings.
 
+[0.0.5]: https://github.com/easyeda/eext-deeppcb-autorouter
 [0.0.4]: https://github.com/easyeda/eext-deeppcb-autorouter
 [0.0.3]: https://github.com/easyeda/eext-deeppcb-autorouter
 [0.0.1]: https://github.com/easyeda/eext-deeppcb-autorouter

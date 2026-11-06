@@ -39,14 +39,10 @@
 		'label-timeout': 'allocatedTime',
 		'timeout-unit': 'min',
 		'unlock-note': 'unlockNote',
-		'label-auto-import': 'autoImport',
 		'label-auto-import-2': 'autoImport',
-		'auto-import-hint': 'autoImportHint',
 		'auto-import-hint-2': 'autoImportHint',
 		'start-btn-text': 'startRouting',
 		'restore-inline-btn': 'restorePrevious',
-		'restore-btn': 'restore',
-		'restore-dismiss': 'dismiss',
 		'run-title': 'runTitle',
 		'metric-time-label': 'timeLeft',
 		'metric-rev-label': 'solutions',
@@ -216,7 +212,6 @@
 		var timeout = Number(DP.cfg.defaultTimeout) || 45;
 		$('timeout').value = String(timeout);
 		setText('timeout-value', String(timeout));
-		$('auto-import').checked = !!DP.cfg.autoImport;
 
 		var session = DP.loadSession();
 		state.sessionAvailable = !!session;
@@ -229,21 +224,6 @@
 		var disabled = state.busy || !DP.cfg.apiKey;
 		$('start-btn').disabled = disabled;
 		$('start-btn').title = !DP.cfg.apiKey ? DP.t('apiNoticeNoKey') : '';
-	}
-
-	function renderRestoreCard() {
-		var state = DP.state;
-		var session = DP.loadSession();
-		var card = $('restore-card');
-		var visible = !!session && !state.sessionDismissed && !state.boardId;
-		show(card, visible);
-		if (!visible) return;
-		setText('restore-title', DP.t('restorePrevious'));
-		var parts = [];
-		if (session.boardName) parts.push(session.boardName);
-		if (session.projectName) parts.push(session.projectName);
-		if (session.updatedAt) parts.push(DP.formatDate(session.updatedAt));
-		setText('restore-sub', parts.join(' · '));
 	}
 
 	/* ---------------- Run ---------------- */
@@ -260,7 +240,6 @@
 		var state = DP.state;
 		var hasBoard = !!state.boardId;
 		show($('setup-card'), !hasBoard);
-		show($('restore-card'), !hasBoard && !!DP.loadSession() && !state.sessionDismissed);
 		show($('run-card'), hasBoard);
 		show($('how-card'), !hasBoard);
 		if (!hasBoard) return;
@@ -417,7 +396,6 @@
 		renderNotice();
 		renderProject();
 		renderSetup();
-		renderRestoreCard();
 		renderRun();
 		renderHistory();
 	};
@@ -792,10 +770,6 @@
 			$('timeout').addEventListener('input', function () {
 				setText('timeout-value', $('timeout').value);
 			});
-			$('auto-import').addEventListener('change', function () {
-				DP.cfg.autoImport = $('auto-import').checked;
-				DP.saveConfig();
-			});
 			$('board-name').addEventListener('input', function () {
 				DP.state.boardNameTouched = true;
 				DP.state.boardName = $('board-name').value;
@@ -804,15 +778,8 @@
 			$('start-btn').addEventListener('click', function () {
 				DP.startRun();
 			});
-			$('restore-btn').addEventListener('click', function () {
-				DP.restoreSession();
-			});
 			$('restore-inline-btn').addEventListener('click', function () {
 				DP.restoreSession();
-			});
-			$('restore-dismiss').addEventListener('click', function () {
-				DP.state.sessionDismissed = true;
-				DP.render();
 			});
 
 			$('stop-btn').addEventListener('click', function () {

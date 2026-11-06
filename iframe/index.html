@@ -44,17 +44,6 @@
 
 			<main>
 				<section id="tab-panel-route">
-					<div class="card restore-card hidden" id="restore-card">
-						<div class="restore-main">
-							<div class="restore-title" id="restore-title">Previous run found</div>
-							<div class="restore-sub" id="restore-sub"></div>
-						</div>
-						<div class="restore-actions">
-							<button class="btn ghost" id="restore-dismiss" type="button">Dismiss</button>
-							<button class="btn secondary" id="restore-btn" type="button">Restore</button>
-						</div>
-					</div>
-
 					<div class="card" id="setup-card">
 						<div class="card-head">
 							<div>
@@ -77,14 +66,6 @@
 							<input type="range" id="timeout" min="5" max="120" step="1" value="45" />
 							<p class="hint" id="unlock-note"></p>
 						</div>
-
-						<label class="check-row">
-							<input type="checkbox" id="auto-import" />
-							<span>
-								<span class="check-title" id="label-auto-import">Automatically import new solutions</span>
-								<span class="check-hint" id="auto-import-hint"></span>
-							</span>
-						</label>
 
 						<div class="actions">
 							<button class="btn primary" id="start-btn" type="button">

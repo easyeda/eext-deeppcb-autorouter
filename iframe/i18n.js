@@ -18,8 +18,6 @@
 			open: '打开',
 			remove: '移除',
 			clear: '清空',
-			dismiss: '忽略',
-			restore: '恢复',
 
 			apiNoticeNoKey: '请先填写 DeepPCB API Key，才能开始自动布线。',
 			apiNoticeKeyInvalid: 'API Key 无效或已过期（401/403），请检查设置。',
@@ -190,8 +188,6 @@
 			open: 'Open',
 			remove: 'Remove',
 			clear: 'Clear',
-			dismiss: 'Dismiss',
-			restore: 'Restore',
 
 			apiNoticeNoKey: 'Add your DeepPCB API key to start routing.',
 			apiNoticeKeyInvalid: 'The API key was rejected (401/403). Check your settings.',
