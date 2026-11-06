@@ -620,6 +620,8 @@
 		var confirmed = await DP.confirm(DP.t('confirmNew'), { okLabel: DP.t('newJob') });
 		if (!confirmed) return;
 		stopPolling();
+		// The PCB may have changed while this window was open.
+		await DP.loadProjectContext();
 		DP.clearSession();
 		S.boardId = '';
 		S.boardPid = '';
@@ -732,13 +734,25 @@
 		return action;
 	}
 
-	function handleCommandAction(action) {
+	async function handleCommandAction(action) {
 		if (action === 'settings') {
 			DP.openSettings(true);
 			return true;
 		}
 		if (action === 'new') {
 			DP.setTab('route');
+			if (S.boardId) {
+				// The dashboard is already showing a job: start the new-job
+				// flow (with its confirmation) so the old task name is cleared.
+				DP.newJob();
+				return true;
+			}
+			// Refresh the context first: the user may have switched to another
+			// PCB while this window stayed open. The task is named after it.
+			await DP.loadProjectContext();
+			S.boardNameTouched = false;
+			S.boardName = S.pcbName || S.projectName || 'board';
+			DP.render();
 			var input = $('board-name');
 			if (input) input.focus();
 			return true;

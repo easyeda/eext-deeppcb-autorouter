@@ -102,7 +102,7 @@ The API key is stored only in the local extension configuration. Requests go onl
 | Item | Description |
 | --- | --- |
 | **Open DeepPCB** | Open the dashboard |
-| **New Routing Job...** | Open the dashboard and focus the new-job form |
+| **New Job...** | Open the dashboard and focus the new-job form |
 | **Settings...** | API key / network / default time settings |
 
 ### How it works
@@ -164,7 +164,7 @@ Versioning starts at `0.0.1`; every `npm run build` increments the patch, and af
    - 填入 DeepPCB API Key；
    - 点击 **测试连接**，确认能读到额度；
    - 点击 **保存**。
-4. 在“新建布线任务”中确认板名和分配时间（5–120 分钟，默认 45 分钟）。
+4. 在“新建任务”中确认板名和分配时间（5–120 分钟，默认 45 分钟）。
 5. 点击 **开始布线**，等待 DeepPCB 云端完成。
 6. 布线完成后，新方案会自动下载并导入当前 PCB；也可以手动点击 **导入最新方案**。
 7. 可用 **保存 .ses** 导出方案文件，或 **在 DeepPCB 中打开** 查看网页端详情。
@@ -232,7 +232,7 @@ API Key 仅保存在本机扩展配置中；请求只会发送给你在设置中
 | 菜单项 | 说明 |
 | --- | --- |
 | **Open DeepPCB** | 打开 DeepPCB 面板 |
-| **New Routing Job...** | 打开面板并聚焦新建任务 |
+| **New Job...** | 打开面板并聚焦新建任务 |
 | **Settings...** | 打开 API Key / 网络 / 默认时间设置 |
 
 ### 工作原理

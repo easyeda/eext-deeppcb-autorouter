@@ -245,7 +245,7 @@
 		if (!hasBoard) return;
 
 		var status = state.status || '';
-		var title = state.boardName || state.projectName || DP.t('runTitle');
+		var title = state.boardName || state.pcbName || state.projectName || DP.t('runTitle');
 		setText('run-title', title);
 		setText('run-subtitle', DP.t('runSubtitle') + (state.boardPid ? ' · ' + state.boardPid.slice(0, 8) : ''));
 		setText('status-pill', DP.statusLabel(status || 'unknown'));

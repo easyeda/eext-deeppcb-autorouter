@@ -3,7 +3,7 @@
 	"uuid": "323f151f184b30e619e478cf1a10a275",
 	"displayName": "DeepPCB AI Autorouter",
 	"description": "使用 DeepPCB 云端 AI 引擎为 PCB 进行自动布线",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"publisher": "EasyEDA",
 	"engines": {
 		"eda": "^3.2.0"
@@ -37,12 +37,12 @@
 				"menuItems": [
 					{
 						"id": "deeppcb-pcb-open",
-						"title": "Open DeepPCB",
+						"title": "Open DeepPCB...",
 						"registerFn": "openDeepPcb"
 					},
 					{
 						"id": "deeppcb-pcb-new",
-						"title": "New Routing Job...",
+						"title": "New Job...",
 						"registerFn": "newRoutingJob"
 					},
 					{
