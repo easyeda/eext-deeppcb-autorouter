@@ -15,6 +15,7 @@ This extension is a port of the open-source [deeppcb-kicad-plugin](https://githu
 - **Automatic import** — downloads the SES result and imports it into the open PCB; no manual file conversion.
 - **Credit tracking** — checks the balance before a run, shows cost while running, and refreshes after it finishes.
 - **Job management** — start, stop, resume and create new jobs; keep a revision history and import the latest or a selected solution.
+- **Board limit check** — before starting, blocks boards over 8 copper layers, 1,200 airwires, 1,000 components or 2,200 pins with a toast.
 - **Session restore** — reopen the window and restore the previous job.
 - **Rating** — rate speed, DRC and solution quality after a run.
 - **Bilingual UI** — Chinese / English, with light and dark themes.
@@ -122,6 +123,8 @@ The package is written to `build/dist/deeppcb-autorouter_v<version>.eext`.
 
 Versioning starts at `0.0.1`; every `npm run build` increments the patch, and after 30 patches the minor advances (`0.0.30` → `0.1.0`).
 
+GitHub Actions packages and publishes the `.eext` when the major or minor version changes on `main`. Pushing a tag such as `v0.1.0`, or running the workflow manually, also publishes a release.
+
 ### Credits and license
 
 - Upstream project: [instadeepai/deeppcb-kicad-plugin](https://github.com/instadeepai/deeppcb-kicad-plugin), Copyright 2026 InstaDeep Ltd., Apache-2.0.
@@ -145,6 +148,7 @@ Versioning starts at `0.0.1`; every `npm run build` increments the patch, and af
 - **自动回传**：下载 SES 布线结果并直接导入当前 PCB，不需要手动转换文件。
 - **额度显示**：启动前检查余额，运行中显示费用，结束后刷新额度。
 - **任务管理**：开始、停止、继续、新建任务；保留历史方案，可导入最新或指定方案。
+- **板子规模检查**：开始前检查，超过 8 层、1,200 飞线、1,000 器件或 2,200 引脚时用吐司提示并阻止继续。
 - **会话恢复**：重新打开窗口后可恢复上次任务。
 - **评分反馈**：任务完成后可评价速度、DRC 和方案质量。
 - **中英双语**：跟随系统语言，可随时切换；支持浅色 / 深色主题。
@@ -251,6 +255,8 @@ npm run build
 构建产物位于 `build/dist/deeppcb-autorouter_v<版本号>.eext`。
 
 版本号从 `0.0.1` 开始，每次 `npm run build` 自动 +1；每 30 次进 1 位（`0.0.30` → `0.1.0`）。
+
+GitHub Actions 会在 `main` 上的主版本号或次版本号变化时自动打包并发布 `.eext`；推送 `v0.1.0` 这类 tag，或手动运行工作流，也会发布 release。
 
 ### 致谢与许可
 

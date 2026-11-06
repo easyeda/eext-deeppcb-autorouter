@@ -1,0 +1,93 @@
+name: Package and release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          version=$(node -p "require('./extension.json').version")
+          release=false
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.ref_type }}" = "tag" ]; then
+            release=true
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            before='${{ github.event.before }}'
+            if [ -n "$before" ] && [ "$before" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$before:extension.json" 2>/dev/null; then
+              previous=$(git show "$before:extension.json" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{console.log(JSON.parse(s).version||'')}catch(e){console.log('')}})")
+              current_prefix=${version%.*}
+              previous_prefix=${previous%.*}
+              if [ -n "$previous" ] && [ "$current_prefix" != "$previous_prefix" ]; then
+                release=true
+              fi
+            else
+              release=true
+            fi
+          fi
+
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            tag_version="${GITHUB_REF_NAME#v}"
+            if [ "$tag_version" != "$version" ]; then
+              echo "Tag $GITHUB_REF_NAME does not match extension.json version $version" >&2
+              exit 1
+            fi
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "release=$release" >> "$GITHUB_OUTPUT"
+          echo "Version $version; major/minor release: $release"
+
+      - name: Set up Node.js
+        if: steps.version.outputs.release == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.version.outputs.release == 'true'
+        run: npm ci
+
+      - name: Build extension
+        if: steps.version.outputs.release == 'true'
+        run: npm run build:ci
+
+      - name: Upload artifact
+        if: steps.version.outputs.release == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: deeppcb-autorouter-v${{ steps.version.outputs.version }}
+          path: build/dist/*.eext
+          if-no-files-found: error
+
+      - name: Publish GitHub release
+        if: steps.version.outputs.release == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="v${{ steps.version.outputs.version }}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" build/dist/*.eext --clobber
+          else
+            gh release create "$tag" build/dist/*.eext --title "$tag" --generate-notes
+          fi

@@ -52,6 +52,124 @@
 		if (!S.projectName) S.projectName = '';
 	};
 
+	/* ---------------- Board limits ---------------- */
+
+	var DEEPPCB_LIMITS = {
+		layers: 8,
+		airwires: 1200,
+		components: 1000,
+		pins: 2200,
+	};
+
+	async function readBoardStats() {
+		if (!eda.pcb_Layer || !eda.pcb_PrimitiveComponent) return null;
+
+		var layers = null;
+		try {
+			if (typeof eda.pcb_Layer.getTheNumberOfCopperLayers === 'function') {
+				layers = await eda.pcb_Layer.getTheNumberOfCopperLayers();
+			}
+			else if (typeof eda.pcb_Layer.getAllLayers === 'function') {
+				var allLayers = (await eda.pcb_Layer.getAllLayers()) || [];
+				layers = allLayers.filter(function (layer) { return layer.type === 'SIGNAL'; }).length;
+			}
+		}
+		catch (e) {
+			layers = null;
+		}
+
+		var components = [];
+		if (typeof eda.pcb_PrimitiveComponent.getAll === 'function') {
+			components = (await eda.pcb_PrimitiveComponent.getAll()) || [];
+		}
+		else if (typeof eda.pcb_PrimitiveComponent.getAllPrimitiveId === 'function') {
+			components = (await eda.pcb_PrimitiveComponent.getAllPrimitiveId()) || [];
+		}
+
+		var stats = {
+			layers: typeof layers === 'number' ? layers : null,
+			components: components.length,
+			pins: null,
+			airwires: null,
+		};
+
+		// No need to walk every footprint when the board already exceeds the
+		// simpler limits.
+		var overLayers = stats.layers !== null && stats.layers > DEEPPCB_LIMITS.layers;
+		var overComponents = stats.components > DEEPPCB_LIMITS.components;
+		if (overLayers || overComponents) return stats;
+
+		var supportsPins = components.length > 0 && typeof components[0].getAllPins === 'function';
+		var pinScanFailed = false;
+		var pins = [];
+		if (supportsPins) {
+			async function pinsOf(component) {
+				try {
+					return (await component.getAllPins()) || [];
+				}
+				catch (e) {
+					pinScanFailed = true;
+					return [];
+				}
+			}
+			for (var i = 0; i < components.length; i += 50) {
+				var lists = await Promise.all(components.slice(i, i + 50).map(pinsOf));
+				lists.forEach(function (list) {
+					pins = pins.concat(list);
+				});
+			}
+		}
+
+		// Fall back to counting pads when component pins are unavailable.
+		if ((!supportsPins || pinScanFailed) && eda.pcb_PrimitivePad && typeof eda.pcb_PrimitivePad.getAll === 'function') {
+			pins = (await eda.pcb_PrimitivePad.getAll()) || [];
+		}
+
+		stats.pins = pins.length;
+		var netPins = {};
+		pins.forEach(function (pin) {
+			var net = pin && typeof pin.getState_Net === 'function' ? pin.getState_Net() : '';
+			if (!net) return;
+			netPins[net] = (netPins[net] || 0) + 1;
+		});
+		// Airwires are the unrouted connections of the netlist. Counting
+		// pinCount - 1 per multi-pin net is a conservative upper bound (it
+		// treats every net as fully unrouted).
+		var airwires = 0;
+		Object.keys(netPins).forEach(function (net) {
+			if (netPins[net] > 1) airwires += netPins[net] - 1;
+		});
+		stats.airwires = airwires;
+		return stats;
+	}
+
+	async function checkBoardLimits() {
+		try {
+			var stats = await readBoardStats();
+			if (!stats) return '';
+			var parts = [];
+			if (stats.layers !== null && stats.layers > DEEPPCB_LIMITS.layers) {
+				parts.push(DP.t('limitLayers', stats.layers, DEEPPCB_LIMITS.layers));
+			}
+			if (stats.airwires !== null && stats.airwires > DEEPPCB_LIMITS.airwires) {
+				parts.push(DP.t('limitAirwires', stats.airwires, DEEPPCB_LIMITS.airwires));
+			}
+			if (stats.components > DEEPPCB_LIMITS.components) {
+				parts.push(DP.t('limitComponents', stats.components, DEEPPCB_LIMITS.components));
+			}
+			if (stats.pins !== null && stats.pins > DEEPPCB_LIMITS.pins) {
+				parts.push(DP.t('limitPins', stats.pins, DEEPPCB_LIMITS.pins));
+			}
+			return parts.length ? DP.t('boardTooLarge', parts.join(' · ')) : '';
+		}
+		catch (e) {
+			// If the board cannot be inspected, let DeepPCB validate it server-side.
+			return '';
+		}
+	}
+
+	DP.checkBoardLimits = checkBoardLimits;
+
 	/* ---------------- Credits ---------------- */
 
 	DP.refreshCredits = async function (silent) {
@@ -317,13 +435,22 @@
 			return;
 		}
 
+		S.busy = true;
+		S.lastError = '';
+		DP.renderSetup();
+
+		var limitMessage = await checkBoardLimits();
+		if (limitMessage) {
+			S.busy = false;
+			DP.renderSetup();
+			toast(limitMessage, 'err');
+			return;
+		}
+
 		var timeout = Math.max(5, Math.min(120, Number($('timeout').value) || DP.cfg.defaultTimeout));
 		var boardName = ($('board-name').value || '').trim() || S.pcbName || S.projectName || 'board';
 		S.boardName = boardName;
 		S.boardNameTouched = true;
-		S.busy = true;
-		S.lastError = '';
-		DP.renderSetup();
 		DP.progress.open(progressSteps());
 
 		var boardId = '';

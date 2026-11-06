@@ -139,6 +139,11 @@
 
 			noProject: '请先打开一个工程和 PCB。',
 			noPcb: '当前没有打开的 PCB，请先在 PCB 编辑器中打开板子。',
+			boardTooLarge: '板子超出 DeepPCB 限制：{1}',
+			limitLayers: '层数 {1}/{2}',
+			limitAirwires: '飞线 {1}/{2}',
+			limitComponents: '器件 {1}/{2}',
+			limitPins: '引脚 {1}/{2}',
 			exportFailed: '无法导出 DSN 文件。请确认已打开 PCB，并允许扩展读取/导出设计文件。',
 			createFailed: '创建任务失败：{1}',
 			submitFailed: '启动任务失败：{1}',
@@ -309,6 +314,11 @@
 
 			noProject: 'Open a project first.',
 			noPcb: 'No PCB is open. Open a PCB in the PCB editor and try again.',
+			boardTooLarge: 'The board exceeds DeepPCB limits: {1}',
+			limitLayers: 'layers {1}/{2}',
+			limitAirwires: 'airwires {1}/{2}',
+			limitComponents: 'components {1}/{2}',
+			limitPins: 'pins {1}/{2}',
 			exportFailed: 'Could not export the DSN file. Make sure a PCB is open and that the extension is allowed to read/export design files.',
 			createFailed: 'Could not create the job: {1}',
 			submitFailed: 'Could not start the job: {1}',

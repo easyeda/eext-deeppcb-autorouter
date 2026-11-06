@@ -1,7 +1,7 @@
 {
 	"name": "deeppcb-autorouter",
 	"type": "module",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "DeepPCB AI autorouter extension for EasyEDA Pro",
 	"author": "EasyEDA Community",
 	"license": "Apache-2.0",
@@ -23,6 +23,7 @@
 		"build:proxy": "node ./build/proxy-zip.mjs",
 		"version:bump": "ts-node ./build/version.ts",
 		"build": "npm run compile && npm run version:bump && ts-node ./build/packaged.ts",
+		"build:ci": "npm run compile && ts-node ./build/packaged.ts",
 		"debug": "ts-node ./build/dev.ts",
 		"update:check": "ts-node ./build/update.ts check",
 		"update": "ts-node ./build/update.ts update && npm install",
