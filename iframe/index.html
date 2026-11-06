@@ -151,14 +151,17 @@
 						</details>
 					</div>
 
-					<div class="card steps-card" id="how-card">
-						<h3 id="how-title">How it works</h3>
-						<ol class="how-list">
-							<li><span class="how-num">1</span><span id="how-1"></span></li>
-							<li><span class="how-num">2</span><span id="how-2"></span></li>
-							<li><span class="how-num">3</span><span id="how-3"></span></li>
-							<li><span class="how-num">4</span><span id="how-4"></span></li>
-						</ol>
+					<div class="how-axis" id="how-card">
+						<span class="how-axis-title" id="how-title">How it works</span>
+						<div class="how-steps">
+							<span class="how-step"><span class="how-num">1</span><span id="how-1"></span></span>
+							<span class="how-arrow">→</span>
+							<span class="how-step"><span class="how-num">2</span><span id="how-2"></span></span>
+							<span class="how-arrow">→</span>
+							<span class="how-step"><span class="how-num">3</span><span id="how-3"></span></span>
+							<span class="how-arrow">→</span>
+							<span class="how-step"><span class="how-num">4</span><span id="how-4"></span></span>
+						</div>
 					</div>
 				</section>
 
@@ -203,30 +206,30 @@
 
 					<div class="field">
 						<label for="set-api-base" id="label-api-base">API base URL</label>
-						<input type="text" id="set-api-base" autocomplete="off" spellcheck="false" />
-						<p class="hint" id="api-base-hint"></p>
-					</div>
-
-					<div class="test-row">
-						<button class="btn secondary" id="test-btn" type="button">Test connection</button>
-						<span class="test-result" id="test-result"></span>
-					</div>
-
-					<div class="field">
-						<div class="label-row">
-							<label for="set-timeout" id="label-default-time">Default allocated time</label>
-							<span class="value-badge"><span id="set-timeout-value">45</span> <span id="set-timeout-unit">min</span></span>
+						<div class="input-with-action">
+							<input type="text" id="set-api-base" autocomplete="off" spellcheck="false" />
+							<button class="btn secondary" id="test-btn" type="button">Test connection</button>
 						</div>
-						<input type="range" id="set-timeout" min="5" max="120" step="1" value="45" />
+						<p class="hint" id="api-base-hint"></p>
+						<p class="test-result" id="test-result"></p>
 					</div>
 
-					<label class="check-row">
-						<input type="checkbox" id="set-auto-import" />
-						<span>
-							<span class="check-title" id="label-auto-import-2">Automatically import new solutions</span>
-							<span class="check-hint" id="auto-import-hint-2"></span>
-						</span>
-					</label>
+					<div class="settings-grid">
+						<div class="field">
+							<div class="label-row">
+								<label for="set-timeout" id="label-default-time">Default allocated time</label>
+								<span class="value-badge"><span id="set-timeout-value">45</span> <span id="set-timeout-unit">min</span></span>
+							</div>
+							<input type="range" id="set-timeout" min="5" max="120" step="1" value="45" />
+						</div>
+						<label class="check-row compact">
+							<input type="checkbox" id="set-auto-import" />
+							<span>
+								<span class="check-title" id="label-auto-import-2">Automatically import new solutions</span>
+								<span class="check-hint" id="auto-import-hint-2"></span>
+							</span>
+						</label>
+					</div>
 
 					<p class="hint" id="permission-hint"></p>
 				</div>
